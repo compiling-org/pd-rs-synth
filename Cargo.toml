@@ -1,0 +1,23 @@
+[package]
+name = "pd-rs-synth"
+version = "0.1.0"
+edition = "2021"
+description = "VST3 synthesizer plugin based on PlugData/Pure Data integration"
+authors = ["Kapil"]
+license = "MIT"
+repository = "https://github.com/compiling-org/pd-rs-synth"
+homepage = "https://github.com/compiling-org/pd-rs-synth"
+keywords = ["vst3", "plugin", "synthesis", "pure-data", "plugdata"]
+categories = ["multimedia::audio", "api-bindings"]
+
+[lib]
+name = "plugdata_vst3"
+crate-type = ["cdylib"]
+
+[dependencies]
+# Basic dependencies for a simple plugin
+anyhow = "1.0"
+thiserror = "1.0"
+
+[features]
+default = []
