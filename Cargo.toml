@@ -1,23 +1,72 @@
 [package]
 name = "pd-rs-synth"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
-description = "VST3 synthesizer plugin based on PlugData/Pure Data integration"
+description = "Professional VST3 plugin with Pure Data integration (library only)"
 authors = ["Kapil"]
 license = "MIT"
 repository = "https://github.com/compiling-org/pd-rs-synth"
 homepage = "https://github.com/compiling-org/pd-rs-synth"
-keywords = ["vst3", "plugin", "synthesis", "pure-data", "plugdata"]
+keywords = ["vst3", "plugin", "synthesis", "pure-data", "plugdata", "audio"]
 categories = ["multimedia::audio", "api-bindings"]
 
 [lib]
 name = "plugdata_vst3"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "plugdata-standalone"
+path = "src/main.rs"
 
 [dependencies]
-# Basic dependencies for a simple plugin
+# VST3 plugin framework - added for compatibility
+vst3 = { version = "0.1.2", optional = true }
+shizen = { version = "0.1.1", optional = true }
+
+# Real-time audio processing
+cpal = "0.15"
+
+# MIDI support
+midir = "0.9"
+wmidi = "4.0"
+
+# Core dependencies
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full", "rt-multi-thread"] }
+async-trait = "0.1"
+
+# Audio utilities
+hound = "3.5"
+rand = "0.8"
+crossbeam = "0.8"
+crossbeam-channel = "0.5"
+
+# Error handling and logging
 anyhow = "1.0"
 thiserror = "1.0"
+log = "0.4"
+env_logger = "0.10"
+
+# Time and synchronization
+chrono = { version = "0.4", features = ["serde"] }
+
+# Integration with hexodsp-vst3
+[dependencies.hexodsp-daw]
+path = "../hexodsp-vst3"
+optional = true
 
 [features]
-default = []
+default = ["standalone"]
+pd-integration = []
+midi-support = []
+osc-support = []
+gui-support = []
+vst3-compatible = ["vst3", "shizen", "hexodsp-daw"]
+modular-integration = ["hexodsp-daw"]
+standalone = []
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
